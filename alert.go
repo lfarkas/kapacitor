@@ -325,6 +325,33 @@ func newAlertNode(et *ExecutingTask, n *pipeline.AlertNode, l *log.Logger) (an *
 		an.handlers = append(an.handlers, h)
 	}
 
+	for _, p := range n.PushoverHandlers {
+		c := et.tm.PushoverService.DefaultHandlerConfig()
+		if p.User != "" {
+			c.User = p.User
+		}
+		if p.Device != "" {
+			c.Device = p.Device
+		}
+		if p.Title != "" {
+			c.Title = p.Title
+		}
+		if p.URL != "" {
+			c.URL = p.URL
+		}
+		if p.URLTitle != "" {
+			c.URLTitle = p.URLTitle
+		}
+		if p.Sound != "" {
+			c.Sound = p.Sound
+		}
+		if p.Timestamp {
+			c.Timestamp = p.Timestamp
+		}
+		h := et.tm.PushoverService.Handler(c, l)
+		an.handlers = append(an.handlers, h)
+	}
+
 	for _, og := range n.OpsGenieHandlers {
 		c := opsgenie.HandlerConfig{
 			TeamsList:      og.TeamsList,

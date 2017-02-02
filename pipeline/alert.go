@@ -45,6 +45,7 @@ const defaultDetailsTmpl = "{{ json . }}"
 //    * OpsGenie -- Send alert to OpsGenie.
 //    * VictorOps -- Send alert to VictorOps.
 //    * PagerDuty -- Send alert to PagerDuty.
+//    * Pagerover -- Send alert to Pushover.
 //    * Talk -- Post alert message to Talk client.
 //    * Telegram -- Post alert message to Telegram client.
 //
@@ -314,6 +315,10 @@ type AlertNode struct {
 	// Send alert to PagerDuty.
 	// tick:ignore
 	PagerDutyHandlers []*PagerDutyHandler `tick:"PagerDuty"`
+
+	// Send alert to Pushover.
+	// tick:ignore
+	PushoverHandlers []*PushoverHandler `tick:"Pushover"`
 
 	// Send alert to Sensu.
 	// tick:ignore
@@ -961,6 +966,70 @@ func (a *AlertNode) Sensu() *SensuHandler {
 // tick:embedded:AlertNode.Sensu
 type SensuHandler struct {
 	*AlertNode
+}
+
+// Send the alert to Pushover.
+//
+// Example:
+//    [pushover]
+//      enabled = true
+//      token = "9hiWoDOZ9IbmHsOTeST123ABciWTIqXQVFDo63h9"
+//      user = "Pushover"
+//
+// Example:
+//    stream
+//         |alert()
+//             .pushover()
+//              .sound('siren')
+//              .user('other user')
+//              .device('mydev')
+//              .title('mytitle')
+//              .URL('myurl')
+//              .URLTitle('mytitle')
+//              .timestamp(TRUE)
+//
+// Send alerts to Pushover.
+//
+// tick:property
+func (a *AlertNode) Pushover() *PushoverHandler {
+	pushover := &PushoverHandler{
+		AlertNode: a,
+	}
+	a.PushoverHandlers = append(a.PushoverHandlers, pushover)
+	return pushover
+}
+
+// tick:embedded:AlertNode.Pushover
+type PushoverHandler struct {
+	*AlertNode
+
+	// User/Group key of your user (or you), viewable when logged
+	// into the Pushover dashboard. Often referred to as USER_KEY
+	// in the Pushover documentation.
+	// If empty uses the user from the configuration.
+	User string
+
+	// Users device name to send message directly to that device,
+	// rather than all of a user's devices (multiple device names may
+	// be separated by a comma)
+	Device string
+
+	// Your message's title, otherwise your apps name is used
+	Title string
+
+	// A supplementary URL to show with your message
+	URL string
+
+	// A title for your supplementary URL, otherwise just URL is shown
+	URLTitle string
+
+	// The name of one of the sounds supported by the device clients to override
+	// the user's default sound choice
+	Sound string
+
+	// A Unix timestamp of your message's date and time to display to the user,
+	// rather than the time your message is received by the Pushover API
+	Timestamp bool
 }
 
 // Send the alert to Slack.
