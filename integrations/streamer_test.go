@@ -7008,7 +7008,7 @@ stream
 	}
 }
 
-func TestStream_AlertPushocer(t *testing.T) {
+func TestStream_AlertPushover(t *testing.T) {
 	ts := pushovertest.NewServer()
 	defer ts.Close()
 

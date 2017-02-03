@@ -45,7 +45,7 @@ const defaultDetailsTmpl = "{{ json . }}"
 //    * OpsGenie -- Send alert to OpsGenie.
 //    * VictorOps -- Send alert to VictorOps.
 //    * PagerDuty -- Send alert to PagerDuty.
-//    * Pagerover -- Send alert to Pushover.
+//    * Pushover -- Send alert to Pushover.
 //    * Talk -- Post alert message to Talk client.
 //    * Telegram -- Post alert message to Telegram client.
 //
@@ -969,6 +969,15 @@ type SensuHandler struct {
 }
 
 // Send the alert to Pushover.
+// Register your application with Pushover at
+// https://pushover.net/apps/build to get a
+// Pushover token.
+//
+// Alert Level Mapping:
+// OK - Sends a -2 priority level.
+// Info - Sends a -1 priority level.
+// Warning - Sends a 1 priority level.
+// Critical - Sends a 2 priority level.
 //
 // Example:
 //    [pushover]

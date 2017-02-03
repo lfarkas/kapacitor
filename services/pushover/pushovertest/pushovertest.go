@@ -51,16 +51,16 @@ type Request struct {
 }
 
 type PostData struct {
-	Token     string `json:"token"`
-	User      string `json:"user"`
-	Message   string `json:"message"`
-	Device    string `json:"device"`
-	Title     string `json:"title"`
-	URL       string `json:"url"`
-	URLTitle  string `json:"url_title"`
-	Sound     string `json:"sound"`
-	Timestamp string `json:"timestamp"`
-	Priority  int    `json:"priority"`
+	Token     string
+	User      string
+	Message   string
+	Device    string
+	Title     string
+	URL       string
+	URLTitle  string
+	Sound     string
+	Timestamp string
+	Priority  int
 }
 
 func NewPostData(v url.Values) (PostData, error) {
