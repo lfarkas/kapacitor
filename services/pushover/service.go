@@ -75,6 +75,7 @@ func (s *Service) Test(options interface{}) error {
 	if !ok {
 		return fmt.Errorf("unexpected options type %t", options)
 	}
+	var ts *time.Time
 
 	return s.Alert(
 		o.User,
@@ -85,6 +86,7 @@ func (s *Service) Test(options interface{}) error {
 		o.URLTitle,
 		o.Sound,
 		o.Timestamp,
+		ts,
 		o.Level,
 	)
 }
@@ -93,8 +95,8 @@ func (s *Service) config() Config {
 	return s.configValue.Load().(Config)
 }
 
-func (s *Service) Alert(user, message, device, title, URL, URLTitle, sound string, timestamp bool, level alert.Level) error {
-	url, post, err := s.preparePost(user, message, device, title, URL, URLTitle, sound, timestamp, level)
+func (s *Service) Alert(user, message, device, title, URL, URLTitle, sound string, timestamp bool, ts *time.Time, level alert.Level) error {
+	url, post, err := s.preparePost(user, message, device, title, URL, URLTitle, sound, timestamp, ts, level)
 	if err != nil {
 		return err
 	}
@@ -192,7 +194,7 @@ func (p *postData) Values() url.Values {
 
 }
 
-func (s *Service) preparePost(user, message, device, title, URL, URLTitle, sound string, timestamp bool, level alert.Level) (string, url.Values, error) {
+func (s *Service) preparePost(user, message, device, title, URL, URLTitle, sound string, timestamp bool, ts *time.Time, level alert.Level) (string, url.Values, error) {
 	c := s.config()
 
 	if !c.Enabled {
@@ -216,8 +218,7 @@ func (s *Service) preparePost(user, message, device, title, URL, URLTitle, sound
 	p.Sound = sound
 
 	if timestamp {
-		now := time.Now()
-		p.Timestamp = &now
+		p.Timestamp = ts
 	}
 
 	p.Priority = priority(level)
@@ -279,6 +280,7 @@ func (h *handler) Handle(event alert.Event) {
 		h.c.URLTitle,
 		h.c.Sound,
 		h.c.Timestamp,
+		&event.State.Time,
 		event.State.Level,
 	); err != nil {
 		h.logger.Println("E! failed to send event to Pushover", err)
