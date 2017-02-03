@@ -34,20 +34,21 @@ func NewConfig() Config {
 // Token, User, and URL parameters must be specified to be considered
 // valid.
 func (c Config) Validate() error {
-	if c.Enabled && c.Token == "" {
-		return errors.New("must specify token")
-	}
+	if c.Enabled {
+		if c.Token == "" {
+			return errors.New("must specify token")
+		}
 
-	if c.Enabled && c.User == "" {
-		return errors.New("must specify user")
-	}
+		if c.User == "" {
+			return errors.New("must specify user")
+		}
 
-	if c.Enabled && c.URL == "" {
-		return errors.New("must specify url")
-	}
-
-	if _, err := url.Parse(c.URL); err != nil {
-		return errors.Wrapf(err, "invalid URL %q", c.URL)
+		if c.URL == "" {
+			return errors.New("must specify url")
+		}
+		if _, err := url.Parse(c.URL); err != nil {
+			return errors.Wrapf(err, "invalid URL %q", c.URL)
+		}
 	}
 
 	return nil
