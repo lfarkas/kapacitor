@@ -261,10 +261,6 @@ type handler struct {
 	logger *log.Logger
 }
 
-func (s *Service) DefaultHandlerConfig() HandlerConfig {
-	return HandlerConfig{}
-}
-
 func (s *Service) Handler(c HandlerConfig, l *log.Logger) alert.Handler {
 	return &handler{
 		s:      s,

@@ -103,7 +103,6 @@ type TaskMaster struct {
 		Handler(pagerduty.HandlerConfig, *log.Logger) alert.Handler
 	}
 	PushoverService interface {
-		DefaultHandlerConfig() pushover.HandlerConfig
 		Handler(pushover.HandlerConfig, *log.Logger) alert.Handler
 	}
 	SlackService interface {
